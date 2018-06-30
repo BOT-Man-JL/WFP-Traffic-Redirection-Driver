@@ -1,0 +1,84 @@
+;;;
+;;; Copyright (c) Microsoft Corporation. All rights reserved
+;;;
+;;; Abstract:
+;;;    Traffic Inspect Callout sample driver install configuration.
+;;;
+
+[Version]
+    Signature   = "$Windows NT$"
+    Class       = WFPCALLOUTS
+    ClassGuid   = {57465043-616C-6C6F-7574-5F636C617373}
+    Provider    = %ProviderString%
+    CatalogFile = Inspect.cat
+    DriverVer   = 11/24/2014,14.24.55.836
+
+[SourceDisksNames]
+   1 = %InspectDisk%,,,""
+
+[SourceDisksFiles]
+   Inspect.sys = 1,,
+
+[DestinationDirs]
+    DefaultDestDir      = 12                                               ; %WinDir%\System32\Drivers
+    Inspect.DriverFiles = 12                                               ; %WinDir%\System32\Drivers
+
+[DefaultInstall]
+    OptionDesc = %InspectServiceDesc%
+    CopyFiles  = Inspect.DriverFiles
+
+[DefaultInstall.Services]
+    AddService = %InspectServiceName%,,Inspect.Service
+
+[DefaultUninstall]
+    DelFiles = Inspect.DriverFiles
+
+[DefaultUninstall.Services]
+    DelService = %InspectServiceName%,0x200                                ; SPSVCINST_STOPSERVICE
+    DelReg     = Inspect.DelRegistry
+
+[Inspect.DriverFiles]
+    Inspect.sys,,,0x00000040                                               ; COPYFLG_OVERWRITE_OLDER_ONLY
+
+[Inspect.Service]
+    DisplayName   = %InspectServiceName%
+    Description   = %InspectServiceDesc%
+    ServiceType   = 1                                                      ; SERVICE_KERNEL_DRIVER
+    StartType     = 3                                                      ; SERVICE_DEMAND_START
+    ErrorControl  = 1                                                      ; SERVICE_ERROR_NORMAL
+    ServiceBinary = %12%\Inspect.sys                                       ; %WinDir%\System32\Drivers\Inspect.sys
+    AddReg        = Inspect.AddRegistry
+
+[Inspect.AddRegistry]
+    ; 202 -> 79
+    HKR,"Parameters","LocalRealAddress", 0x00000000,"10.109.16.202"         ; FLG_ADDREG_TYPE_SZ
+    HKR,"Parameters","LocalFakeAddress", 0x00000000,"10.109.19.108"         ; FLG_ADDREG_TYPE_SZ
+    HKR,"Parameters","RemoteRealAddress",0x00000000,"10.109.18.79"          ; FLG_ADDREG_TYPE_SZ
+    HKR,"Parameters","RemoteFakeAddress",0x00000000,"10.109.17.253"         ; FLG_ADDREG_TYPE_SZ
+    HKR,"Parameters","LocalRealPort",    0x00010001,"80"                    ; FLG_ADDREG_TYPE_DWORD
+    HKR,"Parameters","LocalFakePort",    0x00010001,"202"                   ; FLG_ADDREG_TYPE_DWORD
+    HKR,"Parameters","RemoteRealPort",   0x00010001,"80"                    ; FLG_ADDREG_TYPE_DWORD
+    HKR,"Parameters","RemoteFakePort",   0x00010001,"799"                   ; FLG_ADDREG_TYPE_DWORD
+    HKR,"Parameters","LocalEthernetAddress", 0x00000000,"74-27-ea-00-00-02" ; FLG_ADDREG_TYPE_SZ
+    HKR,"Parameters","RemoteEthernetAddress",0x00000000,"74-27-ea-00-00-03" ; FLG_ADDREG_TYPE_SZ
+
+	; 79 -> 202
+    ;HKR,"Parameters","LocalRealAddress", 0x00000000,"10.109.18.79"          ; FLG_ADDREG_TYPE_SZ
+    ;HKR,"Parameters","LocalFakeAddress", 0x00000000,"10.109.17.253"         ; FLG_ADDREG_TYPE_SZ
+    ;HKR,"Parameters","RemoteRealAddress",0x00000000,"10.109.16.202"         ; FLG_ADDREG_TYPE_SZ
+    ;HKR,"Parameters","RemoteFakeAddress",0x00000000,"10.109.19.108"         ; FLG_ADDREG_TYPE_SZ
+    ;HKR,"Parameters","LocalRealPort",    0x00010001,"80"                    ; FLG_ADDREG_TYPE_DWORD
+    ;HKR,"Parameters","LocalFakePort",    0x00010001,"799"                   ; FLG_ADDREG_TYPE_DWORD
+    ;HKR,"Parameters","RemoteRealPort",   0x00010001,"80"                    ; FLG_ADDREG_TYPE_DWORD
+    ;HKR,"Parameters","RemoteFakePort",   0x00010001,"202"                   ; FLG_ADDREG_TYPE_DWORD
+    ;HKR,"Parameters","LocalEthernetAddress", 0x00000000,"74-27-ea-00-00-79" ; FLG_ADDREG_TYPE_SZ
+    ;HKR,"Parameters","RemoteEthernetAddress",0x00000000,"74-27-ea-00-00-80" ; FLG_ADDREG_TYPE_SZ
+
+[Inspect.DelRegistry]
+    HKR,"Parameters",,,
+
+[Strings]
+    ProviderString     = "BOT Man JL, 2018"
+	InspectDisk        = "Traffic Inspect Installation Disk"
+    InspectServiceDesc = "Traffic Inspect Callout Driver"
+    InspectServiceName = "Inspect"
