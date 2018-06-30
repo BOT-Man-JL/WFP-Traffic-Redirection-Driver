@@ -89,3 +89,9 @@ Key ideas are posted by _BOT Man_ in **Chinese**:
 - `restart-nic.bat`: restart NIC `以太网`
 - `enable-dbgprint.reg`: enable `dbgprint` on DbgView (use once)
 - `enable-testsigning.bat:` enable test signing (use once)
+
+## License
+
+Copyright (C) 2018  BOT Man
+
+GPL-3.0 License
